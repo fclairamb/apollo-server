@@ -198,8 +198,14 @@ export class ApolloServer extends ApolloServerBase {
               playgroundRenderPageOptions,
             );
             ctx.body = playground;
-            return;
+          } else {
+            // Anything else than HTML is not acceptable, as such should result
+            // in a 406 status code:
+            // https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/406
+            ctx.status = 406;
+            ctx.body = "GET can only return HTML";
           }
+          return;
         }
 
         return graphqlKoa(() => {
